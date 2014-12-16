@@ -11,9 +11,15 @@ register = template.Library()
 
 @register.inclusion_tag('disqus_sync/comments.html', takes_context=True)
 def render_disqus_comments(context):
-    thread_id = ThreadMap().get_thread_id_for_url(context['request'].path)
+    try:
+        thread_id = ThreadMap()[context['request'].build_absolute_uri()]
+        comments = DisqusComment.objects.filter(thread_id=thread_id)
+    except KeyError:
+        # thread_id could not be resolved
+        comments = []
+
     return {
         'request': context['request'],
-        'comments': DisqusComment.objects.filter(thread_id=thread_id),
+        'comments': comments,
         'conf': conf
     }

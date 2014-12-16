@@ -36,14 +36,6 @@ class ThreadMap(dict):
     def __init__(self, *args, **kwargs):
         super(ThreadMap, self).__init__(self.get_data())
 
-    def get_thread_id_for_url(self, url):
-        url = self.to_relative_url(url)
-
-        if url in self:
-            return self[url]
-
-        raise KeyError('URL not present in the map.')
-
     def get_data(self):
         data = cache.get(conf.THREAD_MAP_CACHE_KEY)
 
@@ -62,7 +54,7 @@ class ThreadMap(dict):
         data = []
 
         for t in Paginator(disqus.threads.list, forum=conf.FORUM):
-            data.append((cls.to_relative_url(t['link']), t['id']))
+            data.append((t['link'], t['id']))
 
         cache.set(conf.THREAD_MAP_CACHE_KEY, data, timeout=conf.THREAD_MAP_CACHE_TIMEOUT)
         return data
