@@ -1,0 +1,5 @@
+<div class="ds ds-comment">
+    {% if comment.author_url %}<a href="{{ comment.author_url }}">{% endif %}<strong>{{ comment.author_name }}</strong>{% if comment.author_url %}</a>{% endif %}
+    <small>{{ comment.date|date:"DATETIME_FORMAT" }}</small>
+    {{ comment.body|safe }}
+</div>
